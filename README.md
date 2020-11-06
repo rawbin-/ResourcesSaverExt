@@ -5,6 +5,7 @@
 Extension can be found here:
 
 https://chrome.google.com/webstore/detail/save-all-resources/abpdnfjocnmdomablahdcfnoggeeiedb?hl=en-US
+- 0.1.10 fixed incorrect .html suffix with application/javascript file with no suffix like "https://www.wiris.net/demo/editor/editor"
 
 - 0.1.9: Add download list
 

@@ -331,7 +331,11 @@ async function saveAllResourcesFromList(e) {
                 }
                 chrome.tabs.onUpdated.addListener(tabChangeHandler);
                 setTimeout(function() {
-                    chrome.tabs.update(chrome.devtools.inspectedWindow.tabId, { url: currentSite.url });
+                    try{
+                        chrome.tabs.update(chrome.devtools.inspectedWindow.tabId, { url: currentSite.url });
+                    }catch (e){
+                        console.error('tabs update error:',e)
+                    }
                 }, 500);
             });
         } catch (error) {
@@ -586,14 +590,24 @@ function resolveURLToPath(cUrl, cType, cContent) {
                 haveExtension = 'html';
             }
 
+            if(cType === 'script'){
+                filepath = filepath + '.js';
+                haveExtension = 'js';
+            }
+
             if (!haveExtension) {
                 filepath = filepath + '.html';
                 haveExtension = 'html';
             }
         } else {
-            // Add default html for text document
-            filepath = filepath + '.html';
-            haveExtension = 'html';
+            if(cType && cType === 'script'){
+                filepath = filepath + '.js';
+                haveExtension = 'js';
+            }else{
+                // Add default html for text document
+                filepath = filepath + '.html';
+                haveExtension = 'html';
+            }
         }
         filename = filename + '.' + haveExtension;
         console.log('File without extension: ', filename, filepath);
@@ -645,7 +659,7 @@ function downloadURLs(urls, callback) {
         console.log('Current request: ', currentURL);
         var cUrl = currentURL.url;
         var cType = currentURL.type;
-        var resolvedURL = resolveURLToPath(cUrl);
+        var resolvedURL = resolveURLToPath(cUrl,cType);
 
         var filepath = resolvedURL.path;
         var filename = resolvedURL.name;
